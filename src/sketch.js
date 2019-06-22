@@ -10,7 +10,7 @@ var isDrawing = false;
 var mouseX;
 var mouseY;
 
-/********** CANVAS SETUP **********/
+/********** SETUP **********/
 // User doodle drawing canvas
 let userCanvas = document.getElementById("userCanvas");
 let userContext = userCanvas.getContext("2d");
@@ -74,4 +74,13 @@ function drawLine(ctx, prevX, prevY, mouseX, mouseY) {
 	ctx.lineTo(mouseX, mouseY);
 	ctx.stroke();
 	ctx.closePath();
+}
+
+function beginEvolution() {
+	var button = document.getElementById("beginEvolBtn");
+	copyContext.font = "30px Times";
+	copyContext.fillStyle = "#000";
+	copyContext.textAlign = "center";
+	copyContext.fillText("Evolution has started.", copyCanvas.width/2, copyCanvas.height/2); 
+	button.disabled = true;
 }
