@@ -65,7 +65,7 @@ userCanvas.addEventListener("mouseup", e => {
 });
 
 /********** FUNCTIONS **********/
-// Draws a line from (prevX, prevY) to (mouseX, mouseY)
+// Draws a line from (prevX, prevY) to (mouseX, mouseY) on canvas ctx
 function drawLine(ctx, prevX, prevY, mouseX, mouseY) {
 	ctx.beginPath();
 	ctx.moveTo(prevX, prevY);
@@ -76,11 +76,20 @@ function drawLine(ctx, prevX, prevY, mouseX, mouseY) {
 	ctx.closePath();
 }
 
+// Begins evolution on button press event.
 function beginEvolution() {
 	var button = document.getElementById("beginEvolBtn");
+	// temporary: button only shows text on evolution canvas.
 	copyContext.font = "30px Times";
 	copyContext.fillStyle = "#000";
 	copyContext.textAlign = "center";
-	copyContext.fillText("Evolution has started.", copyCanvas.width/2, copyCanvas.height/2); 
+	copyContext.fillText("Evolution has started.", copyCanvas.width / 2, copyCanvas.height  /2); 
 	button.disabled = true;
+}
+
+// Clears the drawn doodle from user canvas.
+function eraseDrawingCanvas() {
+	var button = document.getElementById("eraseDrawing");
+	userContext.fillStyle = "#fff";
+	userContext.fillRect(0, 0, userCanvas.width, userCanvas.height);
 }
