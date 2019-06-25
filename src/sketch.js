@@ -2,7 +2,7 @@
 const LINE_WIDTH = 1; // pixels
 const CELL_SIZE = 30; // pixels
 const POP_SIZE = 10; // individuals in population
-
+const MUTATION_RATE = 0.05; // probability
 
 /********** VARIABLES **********/ 
 // User drawing action
@@ -54,7 +54,7 @@ function buttonBeginEvolution() {
 	}
 
 	// start the evolution process
-	beginEvolution(POP_SIZE, numRows, numCols);
+	beginEvolution(POP_SIZE, numRows, numCols, MUTATION_RATE);
 }
 
 // Clears the drawn doodle from user canvas.

@@ -1,4 +1,4 @@
-function beginEvolution(popSize, rows, cols) {
+function beginEvolution(popSize, rows, cols, mutationRate) {
 	// Creation of initial random population.
 	var population = new Population(popSize, rows, cols);
 
@@ -11,11 +11,13 @@ function beginEvolution(popSize, rows, cols) {
 	// Until system has evolved and draws user's doodle perfectly.
 	while (fitness < maxFitness) {
 		// Create new population based on current one. 
-		population.evolve(fitness, fitnessSum);
+		population.evolve(fitness, fitnessSum, mutationRate);
 
 		// Evaluation of fitness.
 		[fitness, fitnessSum] = population.evaluate();
-	}		
+	}
+
+	
 }
 
 // Returns a random integer given a maximum value
@@ -87,6 +89,20 @@ function Individual(rows, cols) {
 
 		return fitness;
 	};
+
+	// Mutates genes given a mutation rate
+	this.mutate = function(mutationRate) {
+		this.genes.forEach(row => {
+			row.forEach(cell => {
+				if (Math.random() < mutationRate) {
+					// Change cell value:
+					// If cell = 1 --> cell = 0.
+					// If cell = 0 --> cell = 1.
+					cell = Math.abs(cell - 1);
+				}
+			});
+		});
+	}
 }
 
 function Population(popSize, rows, cols) {
@@ -123,18 +139,19 @@ function Population(popSize, rows, cols) {
 	// Carries out the operation of evolution (selection of parents,
 	// crossing-over to get child, and child mutation), updating the
 	// population based on the current one.
-	this.evolve = function(fitness, sum) {
+	this.evolve = function(fitness, fitnessSum, mutationRate) {
 		var newPop = [];
 		for (var i = 0; i < this.popSize; i++) {
 			// Selection of two individuals within the mating pool
-			var parentA = this.select(fitness, sum);
-			var parentB = this.select(fitness, sum);
+			var parentA = this.select(fitness, fitnessSum);
+			var parentB = this.select(fitness, fitnessSum);
 
 			// TODO: make sure parentA !== parentB
 			// Get child by crossing-over the genes of the selected individuals
 			var child = parentA.crossover(parentB);
 
-			// Mutation of genes of the child resulting from crossing-over. 
+			// Mutation of genes of the child resulting from crossing-over.
+			child.mutate(mutationRate);
 		}
 	};
 
