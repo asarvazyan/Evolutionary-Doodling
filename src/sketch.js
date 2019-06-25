@@ -1,6 +1,8 @@
 /********** CONSTANTS **********/
 const LINE_WIDTH = 1; // pixels
 const CELL_SIZE = 30; // pixels
+const POP_SIZE = 40; // individuals in population
+
 
 /********** VARIABLES **********/ 
 // User drawing action
@@ -52,7 +54,7 @@ function buttonBeginEvolution() {
 	}
 
 	// start the evolution process
-	//beginEvolution(doodle);
+	beginEvolution(POP_SIZE, numRows, numCols);
 }
 
 // Clears the drawn doodle from user canvas.
