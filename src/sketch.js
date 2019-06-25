@@ -1,7 +1,7 @@
 /********** CONSTANTS **********/
 const LINE_WIDTH = 1; // pixels
 const CELL_SIZE = 30; // pixels
-const POP_SIZE = 40; // individuals in population
+const POP_SIZE = 10; // individuals in population
 
 
 /********** VARIABLES **********/ 
