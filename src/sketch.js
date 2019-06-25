@@ -81,13 +81,17 @@ function canvasSetup() {
 	userCanvas.addEventListener("mousemove", e => {
 		if (isDrawing === true) {
 			// fill black cell
-			cellX = Math.floor(e.clientX / CELL_SIZE) * CELL_SIZE;
-			cellY = Math.floor(e.clientY / CELL_SIZE) * CELL_SIZE;
+
+			var rowIndex = Math.floor(e.clientY / (CELL_SIZE + 1));
+			var colIndex = Math.floor(e.clientX / (CELL_SIZE + 1));
+
+			cellY = rowIndex * CELL_SIZE;
+			cellX = colIndex * CELL_SIZE;
 			userContext.fillStyle = "#000";
 			userContext.fillRect(cellX, cellY, CELL_SIZE, CELL_SIZE);
 
 			// Save cell as a 1 in doodle array
-			//save(cellX, cellY);
+			doodle[rowIndex][colIndex] = 1;
 		}
 	});
 
@@ -115,7 +119,7 @@ function doodleSetup() {
 	}
 }
 
-
+// Draws the canvas as cells
 function drawCells(ctx) {
 	ctx.beginPath();
 	ctx.strokeStyle = "rgba(0, 0, 0, 0.5)"; // add opacity
@@ -135,5 +139,4 @@ function drawCells(ctx) {
 }
 
 canvasSetup();
-doodleSetup()
-console.log(doodle);
+doodleSetup();
