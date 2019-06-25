@@ -12,23 +12,24 @@
 			}
 
 			#userCanvas {
-				border: 5px solid black;
+				border: 2px solid black;
 			}
 
 			#evoCanvas {
-				border: 5px solid black;
+				border: 2px solid black;
 			}
 		</style>
 		
 	</head>
 
 	<body>
-		<canvas id="userCanvas" width="300" height="300"></canvas>
-		<canvas id="evoCanvas" width="300" height="300"></canvas>
+		<canvas id="userCanvas" width="480" height="480"></canvas>
+		<canvas id="evoCanvas" width="480" height="480"></canvas>
 
-		<button type="button" id="beginEvolutionButton" onclick="beginEvolution()">Start Evolution</button>
-		<button type="button" id="eraseDoodleButton" onclick="eraseDoodle()">Erase Doodle</button>
+		<button type="button" id="beginEvolutionButton" onclick="buttonBeginEvolution()">Start Evolution</button>
+		<button type="button" id="eraseDoodleButton" onclick="buttonEraseDoodle()">Erase Doodle</button>
 
+		<script src="src/evolution.js"></script>
 		<script src="src/sketch.js"></script>
 	</body>
 </html>	

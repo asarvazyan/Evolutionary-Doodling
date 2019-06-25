@@ -1,16 +1,23 @@
 /********** CONSTANTS **********/
-const LINE_WIDTH = 4; // pixels
+const LINE_WIDTH = 1; // pixels
+const CELL_SIZE = 30; // pixels
 
-/********** VARIABLES **********/
-// Flags 
+/********** VARIABLES **********/ 
 // User drawing action
 let isDrawing = false;
-// Drawing ability
+
+// Drawing
 let ableToDraw = true;
+let numCells;
+let numRows;
+let numCols;
 
 // Evolution process
 let evolving = false;
 
+// Doodle array (one => black pixel, zero => white pixel)
+let doodle = [];
+ 
 // Mouse posiiton
 let mouseX;
 let mouseY;
@@ -29,7 +36,7 @@ let eraseDoodleButton = document.getElementById("eraseDoodleButton");
 
 /********** FUNCTIONS **********/
 // Begins evolution on button press event.
-function beginEvolution() {
+function buttonBeginEvolution() {
 	// temporary: button only shows text on evolution canvas.
 	evoContext.font = "30px Times";
 	evoContext.fillStyle = "#000";
@@ -43,6 +50,17 @@ function beginEvolution() {
 	if (eraseDoodleButton) {
 		eraseDoodleButton.disabled = true;
 	}
+
+	// start the evolution process
+	//beginEvolution(doodle);
+}
+
+// Clears the drawn doodle from user canvas.
+function buttonEraseDoodle() {
+	// If evolution is not in motion, we can erase our doodle.
+	if (!evolving) {
+		drawCells(userContext);
+	}
 }
 
 // Sets up the user and evolution canvas
@@ -50,75 +68,72 @@ function canvasSetup() {
 	// User doodle drawing canvas
 	userCanvas = document.getElementById("userCanvas");
 	userContext = userCanvas.getContext("2d");
-	userContext.fillStyle = "#fff";
-	userContext.fillRect(0, 0, userCanvas.width, userCanvas.height);
+
+	// When user clicks on a cell, they start drawing
+	userCanvas.addEventListener("mousedown", e => {
+		// Can only start drawing if evolution has not begun
+		if (!evolving) {
+			isDrawing = true;	
+		}	
+	});
+
+	// When user moves mouse and has clicked, cell turns black.
+	userCanvas.addEventListener("mousemove", e => {
+		if (isDrawing === true) {
+			// fill black cell
+			cellX = Math.floor(e.clientX / CELL_SIZE) * CELL_SIZE;
+			cellY = Math.floor(e.clientY / CELL_SIZE) * CELL_SIZE;
+			userContext.fillStyle = "#000";
+			userContext.fillRect(cellX, cellY, CELL_SIZE, CELL_SIZE);
+
+			// Save cell as a 1 in doodle array
+			//save(cellX, cellY);
+		}
+	});
+
+	// When user lets go of mouse, drawing stops.
+	userCanvas.addEventListener("mouseup", e => {
+		isDrawing = false;
+	});
 
 	// Evolution canvas
 	evoCanvas = document.getElementById("evoCanvas");
 	evoContext = evoCanvas.getContext("2d");
-	evoContext.fillStyle = "#fff";
-	evoContext.fillRect(0, 0, evoCanvas.width, evoCanvas.height);
+
+	// Drawing
+	numRows = Math.floor(userCanvas.height / CELL_SIZE);
+	numCols = Math.floor(userCanvas.width / CELL_SIZE);
+	numCells = numRows * numCols;
+	drawCells(evoContext);
+	drawCells(userContext);
 }
 
-// Draws a line from (prevX, prevY) to (mouseX, mouseY) on canvas ctx
-function drawLine(ctx, prevX, prevY, mouseX, mouseY) {
+// Creates the doodle array filling it with 0.
+function doodleSetup() {
+	for (var row = 0; row < numRows; row++) {
+		doodle.push(new Array(numCols).fill(0));
+	}
+}
+
+
+function drawCells(ctx) {
 	ctx.beginPath();
-	ctx.moveTo(prevX, prevY);
-	ctx.strokeStyle = "#000";
+	ctx.strokeStyle = "rgba(0, 0, 0, 0.5)"; // add opacity
+	ctx.fillStyle = "#fff";
 	ctx.lineWidth = LINE_WIDTH;
-	ctx.lineTo(mouseX, mouseY);
-	ctx.stroke();
+
+	for (var row = 0; row < numRows; row++) {
+		for (var column = 0; column < numCols; column++) {
+			var x = column * CELL_SIZE;
+			var y = row * CELL_SIZE;
+			ctx.rect(x, y, CELL_SIZE, CELL_SIZE);
+			ctx.fill();
+			ctx.stroke();
+		}
+	}
 	ctx.closePath();
 }
 
-// Clears the drawn doodle from user canvas.
-function eraseDoodle() {
-	// If evolution is not in motion, we can erase our doodle.
-	if (!evolving) {
-		userContext.fillStyle = "#fff";
-		userContext.fillRect(0, 0, userCanvas.width, userCanvas.height);
-	}
-}
-
 canvasSetup();
-
-
-/********** ACTIONS ON EVENTS **********/
-// On mouse click, drawing action will begin
-userCanvas.addEventListener("mousedown", e => {
-	// Get mouse coords
-	mouseX = e.clientX - userCanvas.offsetLeft;
-	mouseY = e.clientY - userCanvas.offsetTop; 
-	if (ableToDraw === true){
-		isDrawing = true;
-	}
-});
-
-// On mouse movement, drawing action will occur
-userCanvas.addEventListener("mousemove", e => {
-	if (isDrawing === true) {
-		// Update mouse position
-		prevX = mouseX;
-		prevY = mouseY;
-		mouseX = e.clientX - userCanvas.offsetLeft;
-		mouseY = e.clientY - userCanvas.offsetTop;
-
-		// Draw!
-		drawLine(userContext, prevX, prevY, mouseX, mouseY);
-	}
-});
-
-// On mouse un-click (?), drawing action will stop.
-userCanvas.addEventListener("mouseup", e => {
-	if (isDrawing === true) {
-		// Last mouse position update
-		prevX = mouseX;
-		prevY = mouseY;
-		mouseX = e.clientX - userCanvas.offsetLeft;
-		mouseY = e.clientY - userCanvas.offsetTop;
-
-		// Final line drawing
-		drawLine(userContext, prevX, prevY, mouseX, mouseY);
-	}
-	isDrawing = false;
-});
+doodleSetup()
+console.log(doodle);
