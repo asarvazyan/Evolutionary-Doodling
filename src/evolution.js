@@ -1,6 +1,5 @@
 // Takes care of every evolution step on a population.
 function beginEvolution(popSize, rows, cols, mutationRate, numOfOnes) {
-
 	// Creation of initial random population.
 	var population = new Population(popSize, rows, cols);
 
@@ -26,7 +25,7 @@ function beginEvolution(popSize, rows, cols, mutationRate, numOfOnes) {
 		}
 		
 		drawEvolved(record.genes);
-		//requestAnimationFrame(drawEvolved);
+
 		// Create new population based on current one. 
 		population.evolve(fitness, fitnessSum, mutationRate);
 
@@ -41,6 +40,7 @@ function beginEvolution(popSize, rows, cols, mutationRate, numOfOnes) {
 	}
 }
 
+// Draws the individual with the given genes on the evolution canvas.
 function drawEvolved(genes) {
 	drawCells(evoContext);
 	evoContext.fillStyle = "#000";
@@ -184,13 +184,6 @@ function Population(popSize, rows, cols) {
 			fitnessArray.push(currFitness);
 			fitnessSum += currFitness;
 		});
-		/*
-		for (var i = 0; i < this.popSize; i++) {
-			fitnessArray.push(this.individuals[i].evaluate());
-			// For mating pool construction
-			fitnessSum += fitnessArray[i];
-		}
-		*/
 
 		return [fitnessArray,fitnessSum];
 	};
