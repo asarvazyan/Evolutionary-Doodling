@@ -3,6 +3,7 @@ const LINE_WIDTH = 1; // pixels
 const CELL_SIZE = 60; // pixels
 const POP_SIZE = 300; // individuals in population
 const MUTATION_RATE = 0.35; // probability
+const MAX_SAME_RECORD = 1000; // generations
 
 /********** VARIABLES **********/ 
 // User drawing action

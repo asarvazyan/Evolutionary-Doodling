@@ -13,12 +13,14 @@ function beginEvolution(popSize, rows, cols, mutationRate, numOfOnes) {
 	var recordFitness = 0;
 	var record = population.individuals[0];
 	var newRecordFound = false;
-	
 
-	var numOfSameRecord = 0; // control
+	// control
+	var numOfSameRecord = 0;
+
 	// Until system has evolved and draws user's doodle perfectly.
 	while (recordFitness < maxFitness) {
-		// Display individual with highest fitness score.
+
+		// Get individual with highest fitness score.
 		for (var i = 0; i < fitness.length; i++) {
 			if (fitness[i] > recordFitness) {
 				recordFitness = fitness[i];
@@ -34,20 +36,21 @@ function beginEvolution(popSize, rows, cols, mutationRate, numOfOnes) {
 			numOfSameRecord = 0;
 		}
 		
+		// Something's not working here...
 		drawEvolved(record.genes);
 		// Create new population based on current one. 
 		population.evolve(fitness, fitnessSum, mutationRate);
 
-		// Evaluation of fitness.
+		// Evaluation of fitness of new population.
 		[fitness, fitnessSum] = population.evaluate(numOfOnes);
 
 		console.log("Record:" + recordFitness);
 
 		// Stop evolution if there are no advancements.
-		if (numOfSameRecord > 1000) {
+		if (numOfSameRecord > MAX_SAME_RECORD) {
 			return;
 		}
-		
+
 		newRecordFound = false;
 	}
 }
