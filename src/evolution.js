@@ -12,31 +12,43 @@ function beginEvolution(popSize, rows, cols, mutationRate, numOfOnes) {
 	// record fitness and individual
 	var recordFitness = 0;
 	var record = population.individuals[0];
+	var newRecordFound = false;
 	
+
+	var numOfSameRecord = 0; // control
 	// Until system has evolved and draws user's doodle perfectly.
-	var exit = 0;
 	while (recordFitness < maxFitness) {
 		// Display individual with highest fitness score.
 		for (var i = 0; i < fitness.length; i++) {
 			if (fitness[i] > recordFitness) {
 				recordFitness = fitness[i];
 				record = population.individuals[i];
+				newRecordFound = true;
 			}
+		}
+
+		if (newRecordFound === false) {
+			numOfSameRecord++;
+		}
+		else {
+			numOfSameRecord = 0;
 		}
 		
 		drawEvolved(record.genes);
-
 		// Create new population based on current one. 
 		population.evolve(fitness, fitnessSum, mutationRate);
 
 		// Evaluation of fitness.
 		[fitness, fitnessSum] = population.evaluate(numOfOnes);
 
-		exit++;
-		if  (exit >= 500) {
+		console.log("Record:" + recordFitness);
+
+		// Stop evolution if there are no advancements.
+		if (numOfSameRecord > 1000) {
 			return;
 		}
-		console.log("Record:" + recordFitness);
+		
+		newRecordFound = false;
 	}
 }
 
@@ -118,7 +130,8 @@ function Individual(rows, cols) {
 	// Returns the fitness of this individual
 	this.evaluate = function(numOfOnesInDoodle) {
 		var fitness = 0;
-		var ones = 0;
+		var onesInGene = 0;
+
 		for (var row = 0; row < this.numRows; row++) {
 			for (var col = 0; col < this.numCols; col++) {
 				// Fitness will be calculated as:
@@ -129,15 +142,16 @@ function Individual(rows, cols) {
 					fitness++;
 				}
 				if (this.genes[row][col] === 1) {
-					ones++;
+					onesInGene++;
 				}
 			}
 		}
-		var diffOnes = numOfOnesInDoodle - ones;
-		fitness /= Math.abs(diffOnes) + 1;
-		fitness = Math.floor(fitness);
 
-		return fitness;
+		var diffOnes = numOfOnesInDoodle - onesInGene;
+		fitness -= Math.abs(diffOnes);
+
+		// Minimum fitness is 1.
+		return (fitness > 1 ? fitness : 1);
 	};
 
 	// Mutates genes given a mutation rate
@@ -172,20 +186,18 @@ function Population(popSize, rows, cols) {
 	// Returns the fitness of the population as an array
 	// where each element is the fitness of the respective
 	// index's individual and the sum of fitnesses
-	// TODO: take into account the number of white and black cells in doodle
-	// and how many of each are contained in each individual's genes.
 	this.evaluate = function(numOfOnes) {
 		var fitnessArray = [];
 		var fitnessSum = 0;
 
 		// Calculate fitness of individuals
 		this.individuals.forEach(ind => {
-			var currFitness = ind.evaluate(numOfOnes)
+			var currFitness = ind.evaluate(numOfOnes);
 			fitnessArray.push(currFitness);
 			fitnessSum += currFitness;
 		});
 
-		return [fitnessArray,fitnessSum];
+		return [fitnessArray, fitnessSum];
 	};
 
 	// Carries out the operation of evolution (selection of parents,
@@ -224,7 +236,7 @@ function Population(popSize, rows, cols) {
 		// Method: https://github.com/CodingTrain/Rainbow-Topics/issues/146
 		var chooser = getRandomInt(sum);
 
-		for (var i = 0; chooser > 0; i++) {
+		for (var i = 0; chooser > 0 && i < fitness.length; i++) {
 			chooser -= fitness[i];
 		}
 		// Go back to last subtracted value.

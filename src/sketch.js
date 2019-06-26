@@ -1,8 +1,8 @@
 /********** CONSTANTS **********/
 const LINE_WIDTH = 1; // pixels
 const CELL_SIZE = 60; // pixels
-const POP_SIZE = 20; // individuals in population
-const MUTATION_RATE = 0.4; // probability
+const POP_SIZE = 300; // individuals in population
+const MUTATION_RATE = 0.35; // probability
 
 /********** VARIABLES **********/ 
 // User drawing action
