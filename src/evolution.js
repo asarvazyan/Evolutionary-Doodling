@@ -1,23 +1,60 @@
-function beginEvolution(popSize, rows, cols, mutationRate) {
+// Takes care of every evolution step on a population.
+function beginEvolution(popSize, rows, cols, mutationRate, numOfOnes) {
+
 	// Creation of initial random population.
 	var population = new Population(popSize, rows, cols);
 
 	// Evaluation of fitness of population.
-	var [fitness, fitnessSum] = population.evaluate();
+	var [fitness, fitnessSum] = population.evaluate(numOfOnes);
 
 	// Maximum possible fitness: all cells equal.
 	var maxFitness = rows * cols;
 
+	// record fitness and individual
+	var recordFitness = 0;
+	var record = population.individuals[0];
+	
 	// Until system has evolved and draws user's doodle perfectly.
-	while (fitness < maxFitness) {
+	var exit = 0;
+	while (recordFitness < maxFitness) {
+		// Display individual with highest fitness score.
+		for (var i = 0; i < fitness.length; i++) {
+			if (fitness[i] > recordFitness) {
+				recordFitness = fitness[i];
+				record = population.individuals[i];
+			}
+		}
+		
+		drawEvolved(record.genes);
+		//requestAnimationFrame(drawEvolved);
 		// Create new population based on current one. 
 		population.evolve(fitness, fitnessSum, mutationRate);
 
 		// Evaluation of fitness.
-		[fitness, fitnessSum] = population.evaluate();
-	}
+		[fitness, fitnessSum] = population.evaluate(numOfOnes);
 
-	
+		exit++;
+		if  (exit >= 500) {
+			return;
+		}
+		console.log("Record:" + recordFitness);
+	}
+}
+
+function drawEvolved(genes) {
+	drawCells(evoContext);
+	evoContext.fillStyle = "#000";
+
+	for (var row = 0; row < genes.length; row++) {
+		for (var col = 0; col < genes[row].length; col++) {
+			if (genes[row][col] === 1) {
+				cellX = col * CELL_SIZE;
+				cellY = row * CELL_SIZE;
+
+				evoContext.fillRect(cellX, cellY, CELL_SIZE, CELL_SIZE);
+			}
+		}
+	}
 }
 
 // Returns a random integer given a maximum value
@@ -34,7 +71,9 @@ function Individual(rows, cols) {
 	// Creates initial random genes
 	for (var i = 0; i < this.numRows; i++) {
 		this.genes.push(new Array(this.numCols).fill(0));
+	}
 
+	for (var i = 0; i < this.numRows; i++) {
 		for (var j = 0; j < this.numCols; j++) {
 			if (Math.random() > 0.5) {
 				this.genes[i][j] = 1;
@@ -45,8 +84,7 @@ function Individual(rows, cols) {
 	// Returns a new individual with the genes of 'this'
 	// crossed over with the ones from 'other'.
 	this.crossover = function(other) {
-		var child = new Individual();
-
+		var childGenes = [];
 		// Method: 
 		// For each row of the genes matrix, we take a random
 		// part from the genes of 'this' and the rest from the 
@@ -54,29 +92,35 @@ function Individual(rows, cols) {
 		// the child.
 		// TODO: add option to start new row with 'this' or with
 		// 'other' (now it always begins with the genes of 'this').
-		for (var i = 0; i < child.numRows; i++) {
-			var chooser = getRandomInt(child.numCols);
+		for (var row = 0; row < this.numRows; row++) {
+			var chooser = getRandomInt(this.numRows);
 			var newRow = [];
 
 			// Construct new row based on random number.
-			// Add first 'chooser' elements of 'this'.
-			newRow.push(this.genes.slice(0, chooser)); 
-			// Add 'numCols - chooser' elements of 'other'.
-			newRow.push(other.genes(chooser));
+			// Add first 'chooser' elements of 'this'' ith row's genes.
+			var thisGenes = this.genes[row].slice(0, chooser);
 
-			child.genes[i] = newRow;
+			// Add 'numCols - chooser' elements of 'other's' ith row's genes.
+			var otherGenes = other.genes[row].slice(chooser);
+
+			// Concatenate randomly taken parts!
+			newRow = thisGenes.concat(otherGenes);
+
+			childGenes.push(newRow);
 		}
+
+		var child = new Individual(this.numRows, this.numCols);
+		child.setGenes(childGenes);
 
 		return child;
 	};
 
-
 	// Returns the fitness of this individual
-	this.evaluate = function() {
+	this.evaluate = function(numOfOnesInDoodle) {
 		var fitness = 0;
-
+		var ones = 0;
 		for (var row = 0; row < this.numRows; row++) {
-			for (var col = 0; col < this.numCols; col++ ) {
+			for (var col = 0; col < this.numCols; col++) {
 				// Fitness will be calculated as:
 				// +1 if an element of the genes of the individual
 				// is the same as the cell of the user's doodle
@@ -84,8 +128,14 @@ function Individual(rows, cols) {
 				if (this.genes[row][col] === doodle[row][col]) {
 					fitness++;
 				}
+				if (this.genes[row][col] === 1) {
+					ones++;
+				}
 			}
 		}
+		var diffOnes = numOfOnesInDoodle - ones;
+		fitness /= Math.abs(diffOnes) + 1;
+		fitness = Math.floor(fitness);
 
 		return fitness;
 	};
@@ -95,13 +145,14 @@ function Individual(rows, cols) {
 		this.genes.forEach(row => {
 			row.forEach(cell => {
 				if (Math.random() < mutationRate) {
-					// Change cell value:
-					// If cell = 1 --> cell = 0.
-					// If cell = 0 --> cell = 1.
 					cell = Math.abs(cell - 1);
 				}
 			});
 		});
+	}
+
+	this.setGenes = function(newGenes) {
+		this.genes = newGenes;
 	}
 }
 
@@ -114,7 +165,8 @@ function Population(popSize, rows, cols) {
 		// Each population member's genes are going to be a
 		// 2 dimensional array of size (numRows x numCols)
 		// where each element is either a 1 or 0.
-		this.individuals.push(new Individual(rows, cols));	
+		var indiv = new Individual(rows, cols);
+		this.individuals.push(indiv);	
 	}
 
 	// Returns the fitness of the population as an array
@@ -122,16 +174,23 @@ function Population(popSize, rows, cols) {
 	// index's individual and the sum of fitnesses
 	// TODO: take into account the number of white and black cells in doodle
 	// and how many of each are contained in each individual's genes.
-	this.evaluate = function() {
+	this.evaluate = function(numOfOnes) {
 		var fitnessArray = [];
 		var fitnessSum = 0;
 
 		// Calculate fitness of individuals
+		this.individuals.forEach(ind => {
+			var currFitness = ind.evaluate(numOfOnes)
+			fitnessArray.push(currFitness);
+			fitnessSum += currFitness;
+		});
+		/*
 		for (var i = 0; i < this.popSize; i++) {
 			fitnessArray.push(this.individuals[i].evaluate());
 			// For mating pool construction
 			fitnessSum += fitnessArray[i];
 		}
+		*/
 
 		return [fitnessArray,fitnessSum];
 	};
@@ -140,7 +199,8 @@ function Population(popSize, rows, cols) {
 	// crossing-over to get child, and child mutation), updating the
 	// population based on the current one.
 	this.evolve = function(fitness, fitnessSum, mutationRate) {
-		var newPop = [];
+		var newIndividuals = [];
+
 		for (var i = 0; i < this.popSize; i++) {
 			// Selection of two individuals within the mating pool
 			var parentA = this.select(fitness, fitnessSum);
@@ -152,7 +212,11 @@ function Population(popSize, rows, cols) {
 
 			// Mutation of genes of the child resulting from crossing-over.
 			child.mutate(mutationRate);
+
+			newIndividuals[i] = child;
 		}
+
+		this.individuals = newIndividuals;
 	};
 
 	// Returns an individual given a fitness array, where each element is 
@@ -171,10 +235,10 @@ function Population(popSize, rows, cols) {
 			chooser -= fitness[i];
 		}
 		// Go back to last subtracted value.
-		i--;
+		if (i !== 0) {
+			i--;
+		}
 
 		return this.individuals[i];
 	};
-
-	
 }

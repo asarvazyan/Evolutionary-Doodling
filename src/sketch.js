@@ -1,8 +1,8 @@
 /********** CONSTANTS **********/
 const LINE_WIDTH = 1; // pixels
-const CELL_SIZE = 30; // pixels
-const POP_SIZE = 10; // individuals in population
-const MUTATION_RATE = 0.05; // probability
+const CELL_SIZE = 60; // pixels
+const POP_SIZE = 20; // individuals in population
+const MUTATION_RATE = 0.4; // probability
 
 /********** VARIABLES **********/ 
 // User drawing action
@@ -19,6 +19,7 @@ let evolving = false;
 
 // Doodle array (one => black pixel, zero => white pixel)
 let doodle = [];
+let numOfOnes = 0;
  
 // Mouse posiiton
 let mouseX;
@@ -40,10 +41,12 @@ let eraseDoodleButton = document.getElementById("eraseDoodleButton");
 // Begins evolution on button press event.
 function buttonBeginEvolution() {
 	// temporary: button only shows text on evolution canvas.
+	/*
 	evoContext.font = "30px Times";
 	evoContext.fillStyle = "#000";
 	evoContext.textAlign = "center";
-	evoContext.fillText("Evolution has started.", evoCanvas.width / 2, evoCanvas.height  /2); 
+	evoContext.fillText("Evolution has started.", evoCanvas.width / 2, evoCanvas.height  /2);
+	*/
 	beginEvolutionButton.disabled = true;
 
 	// if the button is pressed, evolution begins and doodle can't be erased
@@ -54,7 +57,7 @@ function buttonBeginEvolution() {
 	}
 
 	// start the evolution process
-	beginEvolution(POP_SIZE, numRows, numCols, MUTATION_RATE);
+	beginEvolution(POP_SIZE, numRows, numCols, MUTATION_RATE, numOfOnes);
 }
 
 // Clears the drawn doodle from user canvas.
@@ -83,7 +86,6 @@ function canvasSetup() {
 	userCanvas.addEventListener("mousemove", e => {
 		if (isDrawing === true) {
 			// fill black cell
-
 			var rowIndex = Math.floor(e.clientY / (CELL_SIZE + 1));
 			var colIndex = Math.floor(e.clientX / (CELL_SIZE + 1));
 
@@ -93,7 +95,10 @@ function canvasSetup() {
 			userContext.fillRect(cellX, cellY, CELL_SIZE, CELL_SIZE);
 
 			// Save cell as a 1 in doodle array
-			doodle[rowIndex][colIndex] = 1;
+			if (doodle[rowIndex][colIndex] !== 1) {
+				doodle[rowIndex][colIndex] = 1;
+				numOfOnes++;
+			}			
 		}
 	});
 
