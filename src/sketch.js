@@ -1,9 +1,9 @@
 /********** CONSTANTS **********/
 const LINE_WIDTH = 1; // pixels
-const CELL_SIZE = 60; // pixels
-const POP_SIZE = 300; // individuals in population
-const MUTATION_RATE = 0.35; // probability
-const MAX_SAME_RECORD = 1000; // generations
+const CELL_SIZE = 48; // pixels
+const POP_SIZE = 500; // individuals in population
+const MUTATION_RATE = 0.5; // probability
+const MAX_SAME_RECORD = 250; // generations
 
 /********** VARIABLES **********/ 
 // User drawing action
@@ -41,7 +41,6 @@ let eraseDoodleButton = document.getElementById("eraseDoodleButton");
 /********** FUNCTIONS **********/
 // Begins evolution on button press event.
 function buttonBeginEvolution() {
-	// temporary: button only shows text on evolution canvas.
 	/*
 	evoContext.font = "30px Times";
 	evoContext.fillStyle = "#000";
@@ -50,14 +49,14 @@ function buttonBeginEvolution() {
 	*/
 	beginEvolutionButton.disabled = true;
 
-	// if the button is pressed, evolution begins and doodle can't be erased
+	// If the button is pressed, evolution begins and doodle can't be erased.
 	evolving = true;
 	ableToDraw = false;
 	if (eraseDoodleButton) {
 		eraseDoodleButton.disabled = true;
 	}
 
-	// start the evolution process
+	// Start the evolution process.
 	beginEvolution(POP_SIZE, numRows, numCols, MUTATION_RATE, numOfOnes);
 }
 

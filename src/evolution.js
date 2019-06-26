@@ -37,7 +37,10 @@ function beginEvolution(popSize, rows, cols, mutationRate, numOfOnes) {
 		}
 		
 		// Something's not working here...
+		// TODO: make it so the record is drawn every time a new record is found.
+		// TODO: have the correct cells be drawn in green and the incorrect ones in red.
 		drawEvolved(record.genes);
+
 		// Create new population based on current one. 
 		population.evolve(fitness, fitnessSum, mutationRate);
 
