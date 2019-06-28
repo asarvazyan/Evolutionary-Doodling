@@ -1,2 +1,2 @@
 # Evolutionary-Doodling
-A web page where a system learns to draw a doodle drawn by the user.
+Evolutionary system that learns to draw a pixel art doodle made by the user.
