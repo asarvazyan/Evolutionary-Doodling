@@ -15,7 +15,7 @@ let numCells;
 let numRows;
 let numCols;
 
-// Evolution process
+// Evolution process flag
 let evolving = false;
 
 // Doodle array (one => black pixel, zero => white pixel)
@@ -41,12 +41,6 @@ let eraseDoodleButton = document.getElementById("eraseDoodleButton");
 /********** FUNCTIONS **********/
 // Begins evolution on button press event.
 function buttonBeginEvolution() {
-	/*
-	evoContext.font = "30px Times";
-	evoContext.fillStyle = "#000";
-	evoContext.textAlign = "center";
-	evoContext.fillText("Evolution has started.", evoCanvas.width / 2, evoCanvas.height  /2);
-	*/
 	beginEvolutionButton.disabled = true;
 
 	// If the button is pressed, evolution begins and doodle can't be erased.
@@ -57,7 +51,7 @@ function buttonBeginEvolution() {
 	}
 
 	// Start the evolution process.
-	beginEvolution(POP_SIZE, numRows, numCols, MUTATION_RATE, numOfOnes);
+	beginEvolution(POP_SIZE, numRows, numCols, numOfOnes);
 }
 
 // Clears the drawn doodle from user canvas.

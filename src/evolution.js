@@ -1,25 +1,36 @@
-// Takes care of every evolution step on a population.
-function beginEvolution(popSize, rows, cols, mutationRate, numOfOnes) {
+/*********** VARIABLES RELATED TO EVOLUTION **********/
+let population;
+let fitness;
+let fitnessSum;
+let maxFitness;
+let recordFitness;
+let record;
+let numOfSameRecord;
+let newRecordFound;
+
+function beginEvolution(popSize, rows, cols, numOfOnes) {
 	// Creation of initial random population.
-	var population = new Population(popSize, rows, cols);
+	population = new Population(popSize, rows, cols);
 
 	// Evaluation of fitness of population.
-	var [fitness, fitnessSum] = population.evaluate(numOfOnes);
+	[fitness, fitnessSum] = population.evaluate(numOfOnes);
 
 	// Maximum possible fitness: all cells equal.
-	var maxFitness = rows * cols;
+	maxFitness = rows * cols;
 
 	// record fitness and individual
-	var recordFitness = 0;
-	var record = population.individuals[0];
-	var newRecordFound = false;
+	recordFitness = 0;
+	record = population.individuals[0];
+	newRecordFound = false;
 
 	// control
-	var numOfSameRecord = 0;
+	numOfSameRecord = 0;
 
-	// Until system has evolved and draws user's doodle perfectly.
-	while (recordFitness < maxFitness) {
+	evolve();
+}
 
+function evolve() {
+	if (recordFitness < maxFitness) {
 		// Get individual with highest fitness score.
 		for (var i = 0; i < fitness.length; i++) {
 			if (fitness[i] > recordFitness) {
@@ -29,20 +40,20 @@ function beginEvolution(popSize, rows, cols, mutationRate, numOfOnes) {
 			}
 		}
 
+		// Count how many times the record has not changed
+		// Used to terminate the program in case the evolution 
+		// result is not perfect.
 		if (newRecordFound === false) {
 			numOfSameRecord++;
 		}
 		else {
 			numOfSameRecord = 0;
 		}
+			
 		
-		// Something's not working here...
-		// TODO: make it so the record is drawn every time a new record is found.
-		// TODO: have the correct cells be drawn in green and the incorrect ones in red.
-		drawEvolved(record.genes);
 
 		// Create new population based on current one. 
-		population.evolve(fitness, fitnessSum, mutationRate);
+		population.evolve(fitness, fitnessSum, MUTATION_RATE);
 
 		// Evaluation of fitness of new population.
 		[fitness, fitnessSum] = population.evaluate(numOfOnes);
@@ -55,6 +66,12 @@ function beginEvolution(popSize, rows, cols, mutationRate, numOfOnes) {
 		}
 
 		newRecordFound = false;
+
+		// Something's not working here...
+		// TODO: make it so the record is drawn every time a new record is found.
+		// TODO: have the correct cells be drawn in green and the incorrect ones in red.
+		drawEvolved(record.genes);
+		requestAnimationFrame(evolve);
 	}
 }
 
@@ -79,6 +96,3 @@ function drawEvolved(genes) {
 function getRandomInt(max) {
   return Math.floor(Math.random() * Math.floor(max));
 }
-
-
-
