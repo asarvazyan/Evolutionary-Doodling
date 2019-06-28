@@ -9,6 +9,8 @@
 		<style>			
 			body {
 				background-color: lightblue;
+				font-size: 20px;
+				font: "Times";
 			}
 
 			#userCanvas {
@@ -17,6 +19,34 @@
 
 			#evoCanvas {
 				border: 2px solid black;
+			}
+
+			#beginEvolutionButton {
+				position: absolute;
+				left: 8px;
+				top: 500px;
+			}
+
+			#eraseDoodleButton {
+				position: absolute;
+				left: 135px;
+				top: 500px;
+			}
+
+			#genCount {
+				position:absolute;
+				top: 10px;
+				left: 1000px;
+			}
+			#recordGen {
+				position:absolute;
+				top: 30px;
+				left: 1000px;
+			}
+			#similarity {
+				position:absolute;
+				top: 50px;
+				left: 1000px;
 			}
 		</style>
 		
@@ -28,6 +58,11 @@
 
 		<button type="button" id="beginEvolutionButton" onclick="buttonBeginEvolution()">Start Evolution</button>
 		<button type="button" id="eraseDoodleButton" onclick="buttonEraseDoodle()">Erase Doodle</button>
+
+		<div id="genCount">Generation:</div>
+		<div id="recordGen">Record Generation:</div>
+		<div id="similarity">Similarity:</div>
+
 
 		<script src="src/population.js"></script>
 		<script src="src/individual.js"></script>

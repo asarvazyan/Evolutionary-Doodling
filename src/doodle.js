@@ -51,7 +51,7 @@ function buttonBeginEvolution() {
 	}
 
 	// Start the evolution process.
-	beginEvolution(POP_SIZE, numRows, numCols, numOfOnes);
+	startEvolution(POP_SIZE, numRows, numCols, numOfOnes);
 }
 
 // Clears the drawn doodle from user canvas.
