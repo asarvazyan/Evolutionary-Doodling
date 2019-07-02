@@ -2,7 +2,7 @@
 const LINE_WIDTH = 1; // pixels
 const CELL_SIZE = 40; // pixels
 const POP_SIZE = 2000; // individuals in population
-const MUTATION_RATE = 0.125; // probability
+const MUTATION_RATE = 0.1; // probability
 const MAX_SAME_RECORD = 250; // generations
 
 /********** VARIABLES **********/ 
