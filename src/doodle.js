@@ -1,8 +1,8 @@
 /********** CONSTANTS **********/
 const LINE_WIDTH = 1; // pixels
-const CELL_SIZE = 48; // pixels
-const POP_SIZE = 500; // individuals in population
-const MUTATION_RATE = 0.5; // probability
+const CELL_SIZE = 40; // pixels
+const POP_SIZE = 2000; // individuals in population
+const MUTATION_RATE = 0.125; // probability
 const MAX_SAME_RECORD = 250; // generations
 
 /********** VARIABLES **********/ 
@@ -20,7 +20,6 @@ let evolving = false;
 
 // Doodle array (one => black pixel, zero => white pixel)
 let doodle = [];
-let numOfOnes = 0;
  
 // Mouse posiiton
 let mouseX;
@@ -51,7 +50,7 @@ function buttonBeginEvolution() {
 	}
 
 	// Start the evolution process.
-	startEvolution(POP_SIZE, numRows, numCols, numOfOnes);
+	startEvolution(POP_SIZE, numRows, numCols);
 }
 
 // Clears the drawn doodle from user canvas.
@@ -91,7 +90,6 @@ function canvasSetup() {
 			// Save cell as a 1 in doodle array
 			if (doodle[rowIndex][colIndex] !== 1) {
 				doodle[rowIndex][colIndex] = 1;
-				numOfOnes++;
 			}			
 		}
 	});

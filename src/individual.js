@@ -54,7 +54,7 @@ class Individual {
 	}
 
 	// Returns the fitness of this individual
-	evaluate(numOfOnesInDoodle) {
+	evaluate() {
 		var fitness = 0;
 		var onesInGene = 0;
 
@@ -73,11 +73,8 @@ class Individual {
 			}
 		}
 
-		var diffOnes = numOfOnesInDoodle - onesInGene;
-		fitness -= Math.abs(diffOnes);
-
 		// Minimum fitness is 1.
-		return (fitness > 1 ? fitness : 1);
+		return fitness;
 	}
 
 	// Mutates genes given a mutation rate

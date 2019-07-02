@@ -1,37 +1,25 @@
 /*********** VARIABLES RELATED TO EVOLUTION **********/
-let population;
-let fitness;
-let fitnessSum;
-let maxFitness;
-let recordFitness;
-let record;
-let numOfSameRecord;
-let newRecordFound;
-let generation;
-let recordGeneration;
-let similarity;
+let population; // the population object that evolves
+let fitness = []; // the fitness values of a generation
+let fitnessSum; // sum of fitness values of a generation
+let maxFitness = 0;; // maximum fitness possible
+let recordFitness = 0;; // best fitness in evolution process
+let record; // individual with best fitness
+let newRecordFound = false; // flag for found record
+let numOfSameRecord = 0; // control of lack of evolution
+let generation = 1; // number of generations
+let recordGeneration = 1; // generation that contains record individual
+let similarity = 0; // similarity between user input and record individual
 
-function startEvolution(popSize, rows, cols, numOfOnes) {
+function startEvolution(popSize, rows, cols) {
 	// Creation of initial random population.
 	population = new Population(popSize, rows, cols);
 
 	// Evaluation of fitness of population.
-	[fitness, fitnessSum] = population.evaluate(numOfOnes);
+	[fitness, fitnessSum] = population.evaluate();
 
 	// Maximum possible fitness: all cells equal.
 	maxFitness = rows * cols;
-
-	// record fitness and individual
-	recordFitness = 0;
-	record = population.individuals[0];
-	newRecordFound = false;
-
-	// Count of generations
-	generation = 1;
-	recordGeneration = 1;
-
-	// control
-	numOfSameRecord = 0;
 
 	evolve();
 }
@@ -64,13 +52,13 @@ function evolve() {
 			document.getElementById("recordGen").innerText = "Record Generation: " + recordGeneration;
 		}
 
-		document.getElementById("similarity").innerText = "Similarity: " + similarity + " %";
+		document.getElementById("similarity").innerText = "Similarity: " + similarity.toFixed(2) + " %";
 		// Create new population based on current one. 
 		population.evolve(fitness, fitnessSum, MUTATION_RATE);
 		generation++;
 
 		// Evaluation of fitness of new population.
-		[fitness, fitnessSum] = population.evaluate(numOfOnes);
+		[fitness, fitnessSum] = population.evaluate();
 
 		// Stop evolution if there are no advancements.
 		if (numOfSameRecord > MAX_SAME_RECORD) {
@@ -110,6 +98,7 @@ function drawEvolved(genes) {
 		}
 	}
 
+	// Percentage!
 	similarity = same / maxFitness * 100;
 }
 

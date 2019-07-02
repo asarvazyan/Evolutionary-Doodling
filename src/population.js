@@ -15,13 +15,13 @@ class Population {
 	// Returns the fitness of the population as an array
 	// where each element is the fitness of the respective
 	// index's individual and the sum of fitnesses
-	evaluate(numOfOnes) {
+	evaluate() {
 		var fitnessArray = [];
 		var fitnessSum = 0;
 
 		// Calculate fitness of individuals
 		this.individuals.forEach(ind => {
-			var currFitness = ind.evaluate(numOfOnes);
+			var currFitness = ind.evaluate();
 			fitnessArray.push(currFitness);
 			fitnessSum += currFitness;
 		});
