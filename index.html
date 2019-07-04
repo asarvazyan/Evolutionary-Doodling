@@ -9,7 +9,7 @@
 		<style>			
 			body {
 				background-color: lightblue;
-				font-size: 20px;
+				font-size: 18px Times;
 				font: "Times";
 			}
 
@@ -23,14 +23,14 @@
 
 			#beginEvolutionButton {
 				position: absolute;
-				left: 8px;
-				top: 420px;
+				top: 350px;
+				left: 830px;				
 			}
 
 			#eraseDoodleButton {
-				position: absolute;
-				left: 135px;
-				top: 420px;
+				position: absolute;				
+				top: 385px;
+				left: 830px;
 			}
 
 			#genCount {
@@ -54,13 +54,25 @@
 				top: 75px;
 				left: 830px;
 			}
+
+			#evoParams {
+				position:absolute;
+				top: 180px;
+				left: 830px;
+			}
+
+			label {
+			  display: block;
+			}
 		</style>
 		
 	</head>
 
 	<body>
-		<canvas id="userCanvas" width="400" height="400"></canvas>
-		<canvas id="evoCanvas" width="400" height="400"></canvas>
+
+		
+		<canvas id="userCanvas" width="400" height="600"></canvas>
+		<canvas id="evoCanvas" width="400" height="600"></canvas>
 
 		<button type="button" id="beginEvolutionButton" onclick="buttonBeginEvolution()">Start Evolution</button>
 		<button type="button" id="eraseDoodleButton" onclick="buttonEraseDoodle()">Erase Doodle</button>
@@ -68,7 +80,21 @@
 		<div id="genCount">Generation: 0</div>
 		<div id="recordGen">Record Generation: 0</div>
 		<div id="similarity">Similarity: 0    %</div>
-		<div id="info">Sup</div>
+		<div id="info"></div>
+
+		<form id="evoParams">
+			Set evolution parameters here:
+			<label for="popSize">Population size: </label>
+			<input type="number" id="popSize" form="evoParams" step="10" min="100" max="10000" value="1000"></input>
+
+			<label for="mutRate">Mutation rate (of a given cell): </label>
+			<input type="number" id="mutRate" form="evoParams" step="0.01" min="0" max="1" value="0.1"></input>
+
+			<label for="stopAt">Stop after (generations with no new record found): </label>
+			<input type="number" id="stopAt" form="evoParams" step="1" min="250" max="2000" value="500"></input>
+
+		</form>
+		
 
 		<script src="src/population.js"></script>
 		<script src="src/individual.js"></script>
