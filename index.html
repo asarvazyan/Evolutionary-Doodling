@@ -24,45 +24,51 @@
 			#beginEvolutionButton {
 				position: absolute;
 				left: 8px;
-				top: 500px;
+				top: 420px;
 			}
 
 			#eraseDoodleButton {
 				position: absolute;
 				left: 135px;
-				top: 500px;
+				top: 420px;
 			}
 
 			#genCount {
 				position:absolute;
 				top: 10px;
-				left: 1000px;
+				left: 830px;
 			}
 			#recordGen {
 				position:absolute;
 				top: 30px;
-				left: 1000px;
+				left: 830px;
 			}
 			#similarity {
 				position:absolute;
 				top: 50px;
-				left: 1000px;
+				left: 830px;
+			}
+
+			#info {
+				position:absolute;
+				top: 75px;
+				left: 830px;
 			}
 		</style>
 		
 	</head>
 
 	<body>
-		<canvas id="userCanvas" width="480" height="480"></canvas>
-		<canvas id="evoCanvas" width="480" height="480"></canvas>
+		<canvas id="userCanvas" width="400" height="400"></canvas>
+		<canvas id="evoCanvas" width="400" height="400"></canvas>
 
 		<button type="button" id="beginEvolutionButton" onclick="buttonBeginEvolution()">Start Evolution</button>
 		<button type="button" id="eraseDoodleButton" onclick="buttonEraseDoodle()">Erase Doodle</button>
 
-		<div id="genCount">Generation:</div>
-		<div id="recordGen">Record Generation:</div>
-		<div id="similarity">Similarity:</div>
-
+		<div id="genCount">Generation: 0</div>
+		<div id="recordGen">Record Generation: 0</div>
+		<div id="similarity">Similarity: 0    %</div>
+		<div id="info">Sup</div>
 
 		<script src="src/population.js"></script>
 		<script src="src/individual.js"></script>

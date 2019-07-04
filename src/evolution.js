@@ -55,6 +55,8 @@ function evolve() {
 		document.getElementById("similarity").innerText = "Similarity: " + similarity.toFixed(2) + " %";
 		// Create new population based on current one. 
 		population.evolve(fitness, fitnessSum, MUTATION_RATE);
+		//MUTATION_RATE += 0.00001;
+		//showInfo();
 		generation++;
 
 		// Evaluation of fitness of new population.
@@ -77,9 +79,12 @@ function evolve() {
 // Also gets similarity percentage (since it's convenient to calculate
 // this in the following function).
 function drawEvolved(genes) {
-	drawCells(evoContext);
-	evoContext.fillStyle = "#000";
+	// Clear canvas
+	evoContext.fillStyle = "#fff";
+	evoContext.fillRect(0, 0, evoCanvas.width, evoCanvas.height);
 
+	// Draw 
+	evoContext.fillStyle = "#000";
 	let same = 0;
 	for (var row = 0; row < genes.length; row++) {
 		for (var col = 0; col < genes[row].length; col++) {

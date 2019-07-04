@@ -1,9 +1,9 @@
 /********** CONSTANTS **********/
 const LINE_WIDTH = 1; // pixels
-const CELL_SIZE = 40; // pixels
-const POP_SIZE = 2000; // individuals in population
-const MUTATION_RATE = 0.1; // probability
-const MAX_SAME_RECORD = 250; // generations
+const CELL_SIZE = 20; // pixels
+const POP_SIZE = 1000; // individuals in population
+let MUTATION_RATE = 0.5; // probability
+const MAX_SAME_RECORD = 1000; // generations
 
 /********** VARIABLES **********/ 
 // User drawing action
@@ -53,11 +53,22 @@ function buttonBeginEvolution() {
 	startEvolution(POP_SIZE, numRows, numCols);
 }
 
+function showInfo() {
+	var info = ("Population size: " + POP_SIZE + "\nCell size: " + CELL_SIZE + 
+		"\nMutation rate per cell: " + (MUTATION_RATE * MUTATION_RATE).toFixed(2) +
+		"\nStop: same record after " + MAX_SAME_RECORD + " generations.")
+
+
+	document.getElementById("info").innerText = info;
+
+}
+
 // Clears the drawn doodle from user canvas.
 function buttonEraseDoodle() {
 	// If evolution is not in motion, we can erase our doodle.
 	if (!evolving) {
-		drawCells(userContext);
+		userContext.fillStyle = "#fff";
+		userContext.fillRect(0, 0, userCanvas.width, userCanvas.height);
 	}
 }
 
@@ -79,11 +90,12 @@ function canvasSetup() {
 	userCanvas.addEventListener("mousemove", e => {
 		if (isDrawing === true) {
 			// fill black cell
-			var rowIndex = Math.floor(e.clientY / (CELL_SIZE + 1));
-			var colIndex = Math.floor(e.clientX / (CELL_SIZE + 1));
+			var rowIndex = Math.floor(e.clientY / (CELL_SIZE));
+			var colIndex = Math.floor(e.clientX / (CELL_SIZE));
 
 			cellY = rowIndex * CELL_SIZE;
 			cellX = colIndex * CELL_SIZE;
+			userContext.strokeStyle = "#fff";
 			userContext.fillStyle = "#000";
 			userContext.fillRect(cellX, cellY, CELL_SIZE, CELL_SIZE);
 
@@ -107,8 +119,15 @@ function canvasSetup() {
 	numRows = Math.floor(userCanvas.height / CELL_SIZE);
 	numCols = Math.floor(userCanvas.width / CELL_SIZE);
 	numCells = numRows * numCols;
-	drawCells(evoContext);
-	drawCells(userContext);
+
+	userContext.fillStyle = "#fff";
+	userContext.fillRect(0, 0, userCanvas.width, userCanvas.height);
+
+	evoContext.fillStyle = "#fff";
+	evoContext.fillRect(0, 0, evoCanvas.width, evoCanvas.height);
+
+	// Show information regarding chosen evolution parameters
+	showInfo();
 }
 
 // Creates the doodle array filling it with 0.
@@ -121,7 +140,8 @@ function doodleSetup() {
 // Draws the canvas as cells
 function drawCells(ctx) {
 	ctx.beginPath();
-	ctx.strokeStyle = "rgba(0, 0, 0, 0.5)"; // add opacity
+	//ctx.strokeStyle = "rgba(0, 0, 0, 0.5)"; // add opacity
+	ctx.strokeStyle = "#fff";
 	ctx.fillStyle = "#fff";
 	ctx.lineWidth = LINE_WIDTH;
 
