@@ -11,9 +11,10 @@ let generation = 1; // number of generations
 let recordGeneration = 1; // generation that contains record individual
 let similarity = 0; // similarity between user input and record individual
 
-function startEvolution(popSize, rows, cols) {
+function startEvolution(popSize, rows, cols, mutationRate, maxSameRecord) {
+
 	// Creation of initial random population.
-	population = new Population(popSize, rows, cols);
+	population = new Population(popSize, rows, cols, mutationRate);
 
 	// Evaluation of fitness of population.
 	[fitness, fitnessSum] = population.evaluate();
@@ -21,10 +22,10 @@ function startEvolution(popSize, rows, cols) {
 	// Maximum possible fitness: all cells equal.
 	maxFitness = rows * cols;
 
-	evolve();
+	evolve(maxSameRecord);
 }
 
-function evolve() {
+function evolve(maxSameRecord) {
 	if (recordFitness < maxFitness) {
 		// Get individual with highest fitness score.
 		for (var i = 0; i < fitness.length; i++) {
@@ -54,7 +55,7 @@ function evolve() {
 
 		document.getElementById("similarity").innerText = "Similarity: " + similarity.toFixed(2) + " %";
 		// Create new population based on current one. 
-		population.evolve(fitness, fitnessSum, MUTATION_RATE);
+		population.evolve(fitness, fitnessSum);
 		//MUTATION_RATE += 0.00001;
 		//showInfo();
 		generation++;
@@ -63,7 +64,8 @@ function evolve() {
 		[fitness, fitnessSum] = population.evaluate();
 
 		// Stop evolution if there are no advancements.
-		if (numOfSameRecord > MAX_SAME_RECORD) {
+		if (numOfSameRecord > maxSameRecord) {
+			evolving = false;
 			return;
 		}
 
@@ -72,6 +74,9 @@ function evolve() {
 		// Animate!
 		drawEvolved(record.genes);
 		requestAnimationFrame(evolve);
+	}
+	else {
+		evolving = false;
 	}
 }
 

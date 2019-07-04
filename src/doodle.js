@@ -1,9 +1,6 @@
 /********** CONSTANTS **********/
 const LINE_WIDTH = 1; // pixels
-const CELL_SIZE = 20; // pixels
-const POP_SIZE = 1000; // individuals in population
-let MUTATION_RATE = 0.5; // probability
-const MAX_SAME_RECORD = 1000; // generations
+const CELL_SIZE = 40; // pixels
 
 /********** VARIABLES **********/ 
 // User drawing action
@@ -15,8 +12,11 @@ let numCells;
 let numRows;
 let numCols;
 
-// Evolution process flag
+// Evolution process
 let evolving = false;
+let mutationRate = document.getElementById("mutRate").value; 
+let popSize = document.getElementById("popSize").value; 
+let maxSameRecord = document.getElementById("stopAt").value;
 
 // Doodle array (one => black pixel, zero => white pixel)
 let doodle = [];
@@ -40,35 +40,58 @@ let eraseDoodleButton = document.getElementById("eraseDoodleButton");
 /********** FUNCTIONS **********/
 // Begins evolution on button press event.
 function buttonBeginEvolution() {
-	beginEvolutionButton.disabled = true;
+	clear(evoCanvas, evoContext);
 
-	// If the button is pressed, evolution begins and doodle can't be erased.
-	evolving = true;
-	ableToDraw = false;
-	if (eraseDoodleButton) {
-		eraseDoodleButton.disabled = true;
+	// Get input parameters
+	mutationRate = document.getElementById("mutRate").value;
+	popSize = document.getElementById("popSize").value;
+	maxSameRecord = document.getElementById("stopAt").value;
+
+	// Start the evolution process if input values are correct
+	if (correctInput(mutationRate, popSize, maxSameRecord)) {
+
+		beginEvolutionButton.disabled = true;
+
+		// If the button is pressed, evolution begins and doodle can't be erased.
+		evolving = true;
+		ableToDraw = false;
+		if (eraseDoodleButton) {
+			eraseDoodleButton.disabled = true;
+		}
+
+		showInfo();
+		startEvolution(popSize, numRows, numCols, mutationRate);
+
 	}
-
-	// Start the evolution process.
-	startEvolution(POP_SIZE, numRows, numCols);
+	else {
+		evoContext.font = "18px Times";
+		evoContext.fillStyle = "#000";
+		evoContext.textAlign = "center";
+		evoContext.fillText("One or more of the input values are incorrect.", evoCanvas.width/2, evoCanvas.height/2); 
+	}
 }
 
 function showInfo() {
-	var info = ("Population size: " + POP_SIZE + "\nCell size: " + CELL_SIZE + 
-		"\nMutation rate per cell: " + (MUTATION_RATE * MUTATION_RATE).toFixed(2) +
-		"\nStop: same record after " + MAX_SAME_RECORD + " generations.")
+	var info = ("Population size: " + popSize + "\nCell side size: " + CELL_SIZE + 
+		"px\nMutation rate per cell: " + mutationRate +
+		"\nStop after " + maxSameRecord + " generations of no new record.")
 
 
 	document.getElementById("info").innerText = info;
+}
 
+function correctInput(mr, ps, msr) {
+	// ensure input values are within range and mutliples of correct number.
+	return ((mr >= 0 && mr <= 1) && 
+			(ps % 100 === 0 && ps >= 100 && ps <= 10000) &&
+			(msr % 10 === 0 && msr >= 250 && msr <= 2000));
 }
 
 // Clears the drawn doodle from user canvas.
 function buttonEraseDoodle() {
 	// If evolution is not in motion, we can erase our doodle.
 	if (!evolving) {
-		userContext.fillStyle = "#fff";
-		userContext.fillRect(0, 0, userCanvas.width, userCanvas.height);
+		clear(userCanvas, userContext);
 	}
 }
 
@@ -80,6 +103,7 @@ function canvasSetup() {
 
 	// When user clicks on a cell, they start drawing
 	userCanvas.addEventListener("mousedown", e => {
+		clear(userCanvas, userContext);
 		// Can only start drawing if evolution has not begun
 		if (!evolving) {
 			isDrawing = true;	
@@ -120,13 +144,17 @@ function canvasSetup() {
 	numCols = Math.floor(userCanvas.width / CELL_SIZE);
 	numCells = numRows * numCols;
 
-	userContext.fillStyle = "#fff";
-	userContext.fillRect(0, 0, userCanvas.width, userCanvas.height);
+	// Canvas must be cleared.
+	clear(userCanvas, userContext);
+	clear(evoCanvas, evoContext);
 
-	evoContext.fillStyle = "#fff";
-	evoContext.fillRect(0, 0, evoCanvas.width, evoCanvas.height);
+	// Show instructional text
+	userContext.font = "50px Times";
+	userContext.fillStyle = "#000";
+	userContext.textAlign = "center";
+	userContext.fillText("Draw here!", userCanvas.width/2, userCanvas.height/2); 
 
-	// Show information regarding chosen evolution parameters
+	// Show information regarding evolution
 	showInfo();
 }
 
@@ -135,6 +163,11 @@ function doodleSetup() {
 	for (var row = 0; row < numRows; row++) {
 		doodle.push(new Array(numCols).fill(0));
 	}
+}
+
+function clear(canvas, ctx) {
+	ctx.fillStyle = "#fff";
+	ctx.fillRect(0, 0, canvas.width, canvas.height);
 }
 
 // Draws the canvas as cells

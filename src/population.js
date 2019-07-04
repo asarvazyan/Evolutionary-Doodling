@@ -1,6 +1,7 @@
 class Population {
-	constructor(popSize, rows, cols) {
+	constructor(popSize, rows, cols, mutationRate) {
 		this.popSize = popSize;
+		this.mutationRate = mutationRate;
 		this.individuals = [];
 
 		// Creates a random Population of size 'popSize'
@@ -32,7 +33,7 @@ class Population {
 	// Carries out the operation of evolution (selection of parents,
 	// crossing-over to get child, and child mutation), updating the
 	// population based on the current one.
-	evolve(fitness, fitnessSum, mutationRate) {
+	evolve(fitness, fitnessSum) {
 		var newIndividuals = [];
 
 		for (var i = 0; i < this.popSize; i++) {
@@ -45,7 +46,7 @@ class Population {
 			var child = parentA.crossover(parentB);
 
 			// Mutation of genes of the child resulting from crossing-over.
-			child.mutate(mutationRate);
+			child.mutate(this.mutationRate);
 
 			newIndividuals[i] = child;
 		}
