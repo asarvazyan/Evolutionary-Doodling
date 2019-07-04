@@ -2,14 +2,15 @@
 let population; // the population object that evolves
 let fitness = []; // the fitness values of a generation
 let fitnessSum; // sum of fitness values of a generation
-let maxFitness = 0;; // maximum fitness possible
-let recordFitness = 0;; // best fitness in evolution process
+let maxFitness = 0; // maximum fitness possible
+let recordFitness = 0; // best fitness in evolution process
 let record; // individual with best fitness
 let newRecordFound = false; // flag for found record
 let numOfSameRecord = 0; // control of lack of evolution
 let generation = 1; // number of generations
 let recordGeneration = 1; // generation that contains record individual
 let similarity = 0; // similarity between user input and record individual
+let stopAt = 0;
 
 function startEvolution(popSize, rows, cols, mutationRate, maxSameRecord) {
 
@@ -22,10 +23,11 @@ function startEvolution(popSize, rows, cols, mutationRate, maxSameRecord) {
 	// Maximum possible fitness: all cells equal.
 	maxFitness = rows * cols;
 
-	evolve(maxSameRecord);
+	stopAt = maxSameRecord;
+	evolve();
 }
 
-function evolve(maxSameRecord) {
+function evolve() {
 	if (recordFitness < maxFitness) {
 		// Get individual with highest fitness score.
 		for (var i = 0; i < fitness.length; i++) {
@@ -33,6 +35,8 @@ function evolve(maxSameRecord) {
 				recordFitness = fitness[i];
 				record = population.individuals[i];
 				newRecordFound = true;
+				console.log(recordFitness);
+				console.log(fitness);
 			}
 		}
 
@@ -56,15 +60,14 @@ function evolve(maxSameRecord) {
 		document.getElementById("similarity").innerText = "Similarity: " + similarity.toFixed(2) + " %";
 		// Create new population based on current one. 
 		population.evolve(fitness, fitnessSum);
-		//MUTATION_RATE += 0.00001;
-		//showInfo();
 		generation++;
 
 		// Evaluation of fitness of new population.
 		[fitness, fitnessSum] = population.evaluate();
 
 		// Stop evolution if there are no advancements.
-		if (numOfSameRecord > maxSameRecord) {
+		if (numOfSameRecord > stopAt) {
+			console.log("finished");
 			evolving = false;
 			return;
 		}
@@ -76,6 +79,7 @@ function evolve(maxSameRecord) {
 		requestAnimationFrame(evolve);
 	}
 	else {
+		console.log("finished");
 		evolving = false;
 	}
 }

@@ -60,8 +60,7 @@ function buttonBeginEvolution() {
 		}
 
 		showInfo();
-		startEvolution(popSize, numRows, numCols, mutationRate);
-
+		startEvolution(popSize, numRows, numCols, mutationRate, maxSameRecord);
 	}
 	else {
 		evoContext.font = "18px Times";
