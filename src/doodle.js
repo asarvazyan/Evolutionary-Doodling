@@ -149,10 +149,15 @@ function canvasSetup() {
 	clear(evoCanvas, evoContext);
 
 	// Show instructional text
-	userContext.font = "50px Times";
+	userContext.font = "35px Times";
 	userContext.fillStyle = "#000";
 	userContext.textAlign = "center";
-	userContext.fillText("Draw here!", userCanvas.width/2, userCanvas.height/2); 
+	userContext.fillText("Draw here!", userCanvas.width/2, userCanvas.height/2);
+
+	evoContext.font = "35px Times";
+	evoContext.fillStyle = "#000";
+	evoContext.textAlign = "center";
+	evoContext.fillText("Evolution is shown here!", evoCanvas.width/2, evoCanvas.height/2); 
 
 	// Show information regarding evolution
 	showInfo();
