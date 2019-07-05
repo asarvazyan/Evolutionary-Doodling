@@ -5,6 +5,7 @@ const CELL_SIZE = 40; // pixels
 /********** VARIABLES **********/ 
 // User drawing action
 let isDrawing = false;
+let firstTimeDrawing = true;
 
 // Drawing
 let ableToDraw = true;
@@ -102,7 +103,10 @@ function canvasSetup() {
 
 	// When user clicks on a cell, they start drawing
 	userCanvas.addEventListener("mousedown", e => {
-		clear(userCanvas, userContext);
+		if (firstTimeDrawing === true) {
+			clear(userCanvas, userContext);
+			firstTimeDrawing = false;
+		}	
 		// Can only start drawing if evolution has not begun
 		if (!evolving) {
 			isDrawing = true;	
