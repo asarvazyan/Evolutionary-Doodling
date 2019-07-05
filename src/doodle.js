@@ -1,6 +1,6 @@
 /********** CONSTANTS **********/
 const LINE_WIDTH = 1; // pixels
-const CELL_SIZE = 40; // pixels
+const CELL_SIZE = 20; // pixels
 
 /********** VARIABLES **********/ 
 // User drawing action
